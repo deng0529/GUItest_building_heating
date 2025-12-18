@@ -4,23 +4,29 @@ import pandas as pd
 # from snowflake.connector.errors import DatabaseError
 import traceback
 
+from snowflake.snowpark import Session
+
 st.write("STEP 1: file started")
 
-# add imports only
-from snowflake.snowpark import Session
-from snowflake.connector.errors import DatabaseError
-
-st.write("STEP 2: imports OK")
-
 def create_session():
-    st.write("STEP 4: entered create_session")
+    st.write("STEP 3: entered create_session")
+    cfg = st.secrets["snowflake"]
+    st.write("STEP 4: secrets loaded")
+    st.write({
+        "account": cfg.get("account"),
+        "user": cfg.get("user"),
+        "warehouse": cfg.get("warehouse"),
+        "database": cfg.get("database"),
+        "schema": cfg.get("schema"),
+        "role": cfg.get("role"),
+        "has_password": "password" in cfg,
+    })
     return None
 
-st.write("STEP 3: before calling create_session")
-
+st.write("STEP 2: before calling create_session")
 create_session()
-
 st.write("STEP 5: after create_session")
+
 # def create_session():
 #     st.write("🔍 Loading secrets...")
 #     st.write(st.secrets)  # SAFE: keys only, values hidden
