@@ -3,7 +3,7 @@ import pandas as pd
 from snowflake.snowpark import Session
 
 st.set_page_config(page_title="Building Heating System Dashboard", layout="wide")
-
+st.write("Secrets keys:", list(st.secrets.keys()))
 # ---------------------------
 # Snowflake connection
 # ---------------------------
