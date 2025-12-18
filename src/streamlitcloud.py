@@ -6,7 +6,7 @@ import traceback
 
 st.set_page_config(page_title="Building Heating System Dashboard", layout="wide")
 st.error("🔥 THIS FILE IS RUNNING")
-st.stop()
+# st.stop()
 st.write("Secrets keys:", list(st.secrets.keys()))
 # ---------------------------
 # Snowflake connection
