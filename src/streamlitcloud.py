@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from snowflake.snowpark import Session
 from snowflake.connector.errors import DatabaseError
+import traceback
 
 st.set_page_config(page_title="Building Heating System Dashboard", layout="wide")
 st.write("Secrets keys:", list(st.secrets.keys()))
@@ -9,24 +10,43 @@ st.write("Secrets keys:", list(st.secrets.keys()))
 # Snowflake connection
 # ---------------------------
 @st.cache_resource
-def create_session():
-    try:
-        cfg = st.secrets["snowflake"]
-        print(cfg)
-        return Session.builder.configs({
-            "account": cfg["account"],
-            "user": cfg["user"],
-            "password": cfg["password"],   # still password for now
-            "warehouse": cfg["warehouse"],
-            "database": cfg["database"],
-            "schema": cfg["schema"],
-            "role": cfg["role"],
-        }).create()
 
-    except DatabaseError as e:
-        st.error("❌ Snowflake connection failed.")
-        st.error("Check credentials in Streamlit Secrets.")
-        st.stop()   # 🔥 THIS LINE PREVENTS LOCKS
+def create_session():
+    st.write("🔍 Loading secrets...")
+    st.write(st.secrets)  # SAFE: keys only, values hidden
+
+    cfg = st.secrets["snowflake"]
+
+    st.write("🔍 Building Snowflake config...")
+    st.write({
+        "account": cfg.get("account"),
+        "user": cfg.get("user"),
+        "warehouse": cfg.get("warehouse"),
+        "database": cfg.get("database"),
+        "schema": cfg.get("schema"),
+        "role": cfg.get("role"),
+        "has_password": "password" in cfg,
+    })
+
+    return Session.builder.configs({
+        "account": cfg["account"],
+        "user": cfg["user"],
+        "password": cfg["password"],
+        "warehouse": cfg["warehouse"],
+        "database": cfg["database"],
+        "schema": cfg["schema"],
+        "role": cfg["role"],
+    }).create()
+
+try:
+    session = create_session()
+    st.success("✅ Snowflake session created successfully")
+    st.write(session.sql("SELECT CURRENT_USER(), CURRENT_ROLE()").collect())
+
+except Exception:
+    st.error("❌ Snowflake session creation failed")
+    st.code(traceback.format_exc())
+    st.stop()
 
 
 session = create_session()
