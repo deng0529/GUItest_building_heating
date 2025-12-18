@@ -12,46 +12,54 @@ st.write("Secrets keys:", list(st.secrets.keys()))
 # Snowflake connection
 # ---------------------------
 @st.cache_resource
-
 def create_session():
-    st.write("🔍 Loading secrets...")
-    st.write(st.secrets)  # SAFE: keys only, values hidden
+    st.write("STEP 3: entered create_session")
+    return None
 
-    cfg = st.secrets["snowflake"]
-
-    st.write("🔍 Building Snowflake config...")
-    st.write({
-        "account": cfg.get("account"),
-        "user": cfg.get("user"),
-        "warehouse": cfg.get("warehouse"),
-        "database": cfg.get("database"),
-        "schema": cfg.get("schema"),
-        "role": cfg.get("role"),
-        "has_password": "password" in cfg,
-    })
-
-    return Session.builder.configs({
-        "account": cfg["account"],
-        "user": cfg["user"],
-        "password": cfg["password"],
-        "warehouse": cfg["warehouse"],
-        "database": cfg["database"],
-        "schema": cfg["schema"],
-        "role": cfg["role"],
-    }).create()
-
-try:
-    session = create_session()
-    st.success("✅ Snowflake session created successfully")
-    st.write(session.sql("SELECT CURRENT_USER(), CURRENT_ROLE()").collect())
-
-except Exception:
-    st.error("❌ Snowflake session creation failed")
-    st.code(traceback.format_exc())
-    st.stop()
-
+st.write("STEP 2: before calling create_session")
 
 session = create_session()
+
+st.write("STEP 4: after calling create_session")
+# def create_session():
+#     st.write("🔍 Loading secrets...")
+#     st.write(st.secrets)  # SAFE: keys only, values hidden
+#
+#     cfg = st.secrets["snowflake"]
+#
+#     st.write("🔍 Building Snowflake config...")
+#     st.write({
+#         "account": cfg.get("account"),
+#         "user": cfg.get("user"),
+#         "warehouse": cfg.get("warehouse"),
+#         "database": cfg.get("database"),
+#         "schema": cfg.get("schema"),
+#         "role": cfg.get("role"),
+#         "has_password": "password" in cfg,
+#     })
+#
+#     return Session.builder.configs({
+#         "account": cfg["account"],
+#         "user": cfg["user"],
+#         "password": cfg["password"],
+#         "warehouse": cfg["warehouse"],
+#         "database": cfg["database"],
+#         "schema": cfg["schema"],
+#         "role": cfg["role"],
+#     }).create()
+#
+# try:
+#     session = create_session()
+#     st.success("✅ Snowflake session created successfully")
+#     st.write(session.sql("SELECT CURRENT_USER(), CURRENT_ROLE()").collect())
+#
+# except Exception:
+#     st.error("❌ Snowflake session creation failed")
+#     st.code(traceback.format_exc())
+#     st.stop()
+#
+#
+# session = create_session()
 
 st.title("Building Heating System Dashboard")
 st.caption("Real-time temperature visualization powered by Snowflake + Streamlit Cloud")
