@@ -11,7 +11,7 @@ def create_session():
     try:
         cfg = st.secrets["snowflake"]
 
-        st.write("Connecting to Snowflake...")
+        # st.write("Connecting to Snowflake...")
 
         return Session.builder.configs({
             "account": cfg["account"],
@@ -32,11 +32,11 @@ session = create_session()
 
 # st.success("✅ Snowflake session created")
 
-st.write(
-    session.sql(
-        "SELECT CURRENT_USER(), CURRENT_ROLE(), CURRENT_WAREHOUSE()"
-    ).collect()
-)
+# st.write(
+#     session.sql(
+#         "SELECT CURRENT_USER(), CURRENT_ROLE(), CURRENT_WAREHOUSE()"
+#     ).collect()
+# )
 
 
 st.title("Building Heating System Dashboard")
