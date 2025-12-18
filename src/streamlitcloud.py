@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 from snowflake.snowpark import Session
+from snowflake.connector.errors import DatabaseError
 
 st.set_page_config(page_title="Building Heating System Dashboard", layout="wide")
 st.write("Secrets keys:", list(st.secrets.keys()))
@@ -9,9 +10,24 @@ st.write("Secrets keys:", list(st.secrets.keys()))
 # ---------------------------
 @st.cache_resource
 def create_session():
-    connection_parameters = st.secrets["snowflake"]
-    session = Session.builder.configs(connection_parameters).create()
-    return session
+    try:
+        cfg = st.secrets["snowflake"]
+
+        return Session.builder.configs({
+            "account": cfg["account"],
+            "user": cfg["user"],
+            "password": cfg["password"],   # still password for now
+            "warehouse": cfg["warehouse"],
+            "database": cfg["database"],
+            "schema": cfg["schema"],
+            "role": cfg["role"],
+        }).create()
+
+    except DatabaseError as e:
+        st.error("❌ Snowflake connection failed.")
+        st.error("Check credentials in Streamlit Secrets.")
+        st.stop()   # 🔥 THIS LINE PREVENTS LOCKS
+
 
 session = create_session()
 
