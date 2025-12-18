@@ -12,7 +12,7 @@ st.write("Secrets keys:", list(st.secrets.keys()))
 def create_session():
     try:
         cfg = st.secrets["snowflake"]
-
+        print(cfg)
         return Session.builder.configs({
             "account": cfg["account"],
             "user": cfg["user"],
