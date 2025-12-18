@@ -1,31 +1,43 @@
 import streamlit as st
 import pandas as pd
-# from snowflake.snowpark import Session
-# from snowflake.connector.errors import DatabaseError
+from snowflake.snowpark import Session
+from snowflake.connector.errors import DatabaseError
 import traceback
 
-from snowflake.snowpark import Session
+st.title("Building Heating App")
 
-st.write("STEP 1: file started")
-
+@st.cache_resource
 def create_session():
-    st.write("STEP 3: entered create_session")
-    cfg = st.secrets["snowflake"]
-    st.write("STEP 4: secrets loaded")
-    st.write({
-        "account": cfg.get("account"),
-        "user": cfg.get("user"),
-        "warehouse": cfg.get("warehouse"),
-        "database": cfg.get("database"),
-        "schema": cfg.get("schema"),
-        "role": cfg.get("role"),
-        "has_password": "password" in cfg,
-    })
-    return None
+    try:
+        cfg = st.secrets["snowflake"]
 
-st.write("STEP 2: before calling create_session")
-create_session()
-st.write("STEP 5: after create_session")
+        st.write("Connecting to Snowflake...")
+
+        return Session.builder.configs({
+            "account": cfg["account"],
+            "user": cfg["user"],
+            "password": cfg["password"],   # password OK for now
+            "warehouse": cfg["warehouse"],
+            "database": cfg["database"],
+            "schema": cfg["schema"],
+            "role": cfg["role"],
+        }).create()
+
+    except DatabaseError:
+        st.error("❌ Snowflake connection failed.")
+        st.code(traceback.format_exc())
+        st.stop()
+
+session = create_session()
+
+st.success("✅ Snowflake session created")
+
+st.write(
+    session.sql(
+        "SELECT CURRENT_USER(), CURRENT_ROLE(), CURRENT_WAREHOUSE()"
+    ).collect()
+)
+
 
 # def create_session():
 #     st.write("🔍 Loading secrets...")
