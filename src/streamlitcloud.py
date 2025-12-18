@@ -38,7 +38,7 @@ st.caption("Real-time temperature visualization powered by Snowflake + Streamlit
 # ---------------------------
 # Load data
 # ---------------------------
-TABLE_NAME = "BUILDINGA"   # ← change if needed
+TABLE_NAME = "BUILDING_A"   # ← change if needed
 
 df = session.table(TABLE_NAME).to_pandas()
 
