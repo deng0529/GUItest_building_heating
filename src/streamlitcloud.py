@@ -1,26 +1,26 @@
 import streamlit as st
 import pandas as pd
-from snowflake.snowpark import Session
-from snowflake.connector.errors import DatabaseError
+# from snowflake.snowpark import Session
+# from snowflake.connector.errors import DatabaseError
 import traceback
 
-st.set_page_config(page_title="Building Heating System Dashboard", layout="wide")
-st.error("🔥 THIS FILE IS RUNNING")
-# st.stop()
-st.write("Secrets keys:", list(st.secrets.keys()))
-# ---------------------------
-# Snowflake connection
-# ---------------------------
-@st.cache_resource
+st.write("STEP 1: file started")
+
+# add imports only
+from snowflake.snowpark import Session
+from snowflake.connector.errors import DatabaseError
+
+st.write("STEP 2: imports OK")
+
 def create_session():
-    st.write("STEP 3: entered create_session")
+    st.write("STEP 4: entered create_session")
     return None
 
-st.write("STEP 2: before calling create_session")
+st.write("STEP 3: before calling create_session")
 
-session = create_session()
+create_session()
 
-st.write("STEP 4: after calling create_session")
+st.write("STEP 5: after create_session")
 # def create_session():
 #     st.write("🔍 Loading secrets...")
 #     st.write(st.secrets)  # SAFE: keys only, values hidden
